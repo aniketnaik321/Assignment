@@ -3,7 +3,8 @@
 Points Covered:
 1. Add Student,
 2. Assingn Student to course.
-3.Token based authorisation.
+3. Student Listing along with their course details
+4. Token based authorisation.
 
 Points Pending:
 1. Validations.
