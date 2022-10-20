@@ -1,0 +1,268 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="StudentDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Course">
+          <Key>
+            <PropertyRef Name="CourseID" />
+          </Key>
+          <Property Name="CourseID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="CourseName" Type="varchar" MaxLength="150" />
+          <Property Name="CreatedOn" Type="datetime2" Precision="7" />
+          <Property Name="ModifiedOn" Type="datetime2" Precision="7" />
+        </EntityType>
+        <EntityType Name="Student">
+          <Key>
+            <PropertyRef Name="StudentID" />
+          </Key>
+          <Property Name="StudentID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="StudName" Type="varchar" MaxLength="150" Nullable="false" />
+          <Property Name="StudentEmail" Type="varchar" MaxLength="150" />
+          <Property Name="Phone" Type="varchar" MaxLength="15" />
+          <Property Name="CreatedOn" Type="datetime2" Precision="7" />
+          <Property Name="ModifiedOn" Type="datetime2" Precision="7" />
+        </EntityType>
+        <EntityType Name="StudentCourseMap">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="StudentID" Type="uniqueidentifier" />
+          <Property Name="CourseID" Type="uniqueidentifier" />
+        </EntityType>
+        <Association Name="FK_StudentCourseMap_Course">
+          <End Role="Course" Type="Self.Course" Multiplicity="0..1" />
+          <End Role="StudentCourseMap" Type="Self.StudentCourseMap" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Course">
+              <PropertyRef Name="CourseID" />
+            </Principal>
+            <Dependent Role="StudentCourseMap">
+              <PropertyRef Name="CourseID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_StudentCourseMap_Student">
+          <End Role="Student" Type="Self.Student" Multiplicity="0..1" />
+          <End Role="StudentCourseMap" Type="Self.StudentCourseMap" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Student">
+              <PropertyRef Name="StudentID" />
+            </Principal>
+            <Dependent Role="StudentCourseMap">
+              <PropertyRef Name="StudentID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Function Name="AddStudent" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="StudentID" Type="uniqueidentifier" Mode="In" />
+          <Parameter Name="StudentName" Type="varchar" Mode="In" />
+          <Parameter Name="EmailID" Type="varchar" Mode="In" />
+          <Parameter Name="PhoneNo" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="AssignCourseToStudent" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="StudentID" Type="uniqueidentifier" Mode="In" />
+          <Parameter Name="CourseID" Type="uniqueidentifier" Mode="In" />
+        </Function>
+        <Function Name="GetStudentList" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="PageNo" Type="int" Mode="In" />
+          <Parameter Name="PageLength" Type="int" Mode="In" />
+        </Function>
+        <EntityContainer Name="StudentDBModelStoreContainer">
+          <EntitySet Name="Course" EntityType="Self.Course" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Student" EntityType="Self.Student" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="StudentCourseMap" EntityType="Self.StudentCourseMap" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_StudentCourseMap_Course" Association="Self.FK_StudentCourseMap_Course">
+            <End Role="Course" EntitySet="Course" />
+            <End Role="StudentCourseMap" EntitySet="StudentCourseMap" />
+          </AssociationSet>
+          <AssociationSet Name="FK_StudentCourseMap_Student" Association="Self.FK_StudentCourseMap_Student">
+            <End Role="Student" EntitySet="Student" />
+            <End Role="StudentCourseMap" EntitySet="StudentCourseMap" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="StudentDBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Course">
+          <Key>
+            <PropertyRef Name="CourseID" />
+          </Key>
+          <Property Name="CourseID" Type="Guid" Nullable="false" />
+          <Property Name="CourseName" Type="String" MaxLength="150" FixedLength="false" Unicode="false" />
+          <Property Name="CreatedOn" Type="DateTime" Precision="7" />
+          <Property Name="ModifiedOn" Type="DateTime" Precision="7" />
+          <NavigationProperty Name="StudentCourseMaps" Relationship="Self.FK_StudentCourseMap_Course" FromRole="Course" ToRole="StudentCourseMap" />
+        </EntityType>
+        <EntityType Name="Student">
+          <Key>
+            <PropertyRef Name="StudentID" />
+          </Key>
+          <Property Name="StudentID" Type="Guid" Nullable="false" />
+          <Property Name="StudName" Type="String" MaxLength="150" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="StudentEmail" Type="String" MaxLength="150" FixedLength="false" Unicode="false" />
+          <Property Name="Phone" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="CreatedOn" Type="DateTime" Precision="7" />
+          <Property Name="ModifiedOn" Type="DateTime" Precision="7" />
+          <NavigationProperty Name="StudentCourseMaps" Relationship="Self.FK_StudentCourseMap_Student" FromRole="Student" ToRole="StudentCourseMap" />
+        </EntityType>
+        <EntityType Name="StudentCourseMap">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="StudentID" Type="Guid" />
+          <Property Name="CourseID" Type="Guid" />
+          <NavigationProperty Name="Course" Relationship="Self.FK_StudentCourseMap_Course" FromRole="StudentCourseMap" ToRole="Course" />
+          <NavigationProperty Name="Student" Relationship="Self.FK_StudentCourseMap_Student" FromRole="StudentCourseMap" ToRole="Student" />
+        </EntityType>
+        <Association Name="FK_StudentCourseMap_Course">
+          <End Role="Course" Type="Self.Course" Multiplicity="0..1" />
+          <End Role="StudentCourseMap" Type="Self.StudentCourseMap" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Course">
+              <PropertyRef Name="CourseID" />
+            </Principal>
+            <Dependent Role="StudentCourseMap">
+              <PropertyRef Name="CourseID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_StudentCourseMap_Student">
+          <End Role="Student" Type="Self.Student" Multiplicity="0..1" />
+          <End Role="StudentCourseMap" Type="Self.StudentCourseMap" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Student">
+              <PropertyRef Name="StudentID" />
+            </Principal>
+            <Dependent Role="StudentCourseMap">
+              <PropertyRef Name="StudentID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="StudentDBEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Courses" EntityType="Self.Course" />
+          <EntitySet Name="Students" EntityType="Self.Student" />
+          <EntitySet Name="StudentCourseMaps" EntityType="Self.StudentCourseMap" />
+          <AssociationSet Name="FK_StudentCourseMap_Course" Association="Self.FK_StudentCourseMap_Course">
+            <End Role="Course" EntitySet="Courses" />
+            <End Role="StudentCourseMap" EntitySet="StudentCourseMaps" />
+          </AssociationSet>
+          <AssociationSet Name="FK_StudentCourseMap_Student" Association="Self.FK_StudentCourseMap_Student">
+            <End Role="Student" EntitySet="Students" />
+            <End Role="StudentCourseMap" EntitySet="StudentCourseMaps" />
+          </AssociationSet>
+          <FunctionImport Name="AddStudent" ReturnType="Collection(StudentDBModel.AddStudent_Result)">
+            <Parameter Name="StudentID" Mode="In" Type="Guid" />
+            <Parameter Name="StudentName" Mode="In" Type="String" />
+            <Parameter Name="EmailID" Mode="In" Type="String" />
+            <Parameter Name="PhoneNo" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="AssignCourseToStudent">
+            <Parameter Name="StudentID" Mode="In" Type="Guid" />
+            <Parameter Name="CourseID" Mode="In" Type="Guid" />
+          </FunctionImport>
+          <FunctionImport Name="GetStudentList" ReturnType="Collection(StudentDBModel.GetStudentList_Result)">
+            <Parameter Name="PageNo" Mode="In" Type="Int32" />
+            <Parameter Name="PageLength" Mode="In" Type="Int32" />
+          </FunctionImport>
+        </EntityContainer>
+        <ComplexType Name="AddStudent_Result">
+          <Property Type="Int32" Name="ErrStatus" Nullable="false" />
+          <Property Type="String" Name="ErrMsg" Nullable="false" MaxLength="4" />
+        </ComplexType>
+        <ComplexType Name="GetStudentList_Result">
+          <Property Type="Guid" Name="StudentID" Nullable="true" />
+          <Property Type="String" Name="StudName" Nullable="false" MaxLength="150" />
+          <Property Type="String" Name="StudentEmail" Nullable="true" MaxLength="150" />
+          <Property Type="String" Name="Phone" Nullable="true" MaxLength="15" />
+          <Property Type="String" Name="CourseName" Nullable="true" MaxLength="150" />
+          <Property Type="Guid" Name="CourseID" Nullable="false" />
+        </ComplexType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="StudentDBModelStoreContainer" CdmEntityContainer="StudentDBEntities">
+          <EntitySetMapping Name="Courses">
+            <EntityTypeMapping TypeName="StudentDBModel.Course">
+              <MappingFragment StoreEntitySet="Course">
+                <ScalarProperty Name="CourseID" ColumnName="CourseID" />
+                <ScalarProperty Name="CourseName" ColumnName="CourseName" />
+                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Students">
+            <EntityTypeMapping TypeName="StudentDBModel.Student">
+              <MappingFragment StoreEntitySet="Student">
+                <ScalarProperty Name="StudentID" ColumnName="StudentID" />
+                <ScalarProperty Name="StudName" ColumnName="StudName" />
+                <ScalarProperty Name="StudentEmail" ColumnName="StudentEmail" />
+                <ScalarProperty Name="Phone" ColumnName="Phone" />
+                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="StudentCourseMaps">
+            <EntityTypeMapping TypeName="StudentDBModel.StudentCourseMap">
+              <MappingFragment StoreEntitySet="StudentCourseMap">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="StudentID" ColumnName="StudentID" />
+                <ScalarProperty Name="CourseID" ColumnName="CourseID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="AddStudent" FunctionName="StudentDBModel.Store.AddStudent">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="StudentDBModel.AddStudent_Result">
+                <ScalarProperty Name="ErrStatus" ColumnName="ErrStatus" />
+                <ScalarProperty Name="ErrMsg" ColumnName="ErrMsg" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="AssignCourseToStudent" FunctionName="StudentDBModel.Store.AssignCourseToStudent" />
+          <FunctionImportMapping FunctionImportName="GetStudentList" FunctionName="StudentDBModel.Store.GetStudentList">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="StudentDBModel.GetStudentList_Result">
+                <ScalarProperty Name="StudentID" ColumnName="StudentID" />
+                <ScalarProperty Name="StudName" ColumnName="StudName" />
+                <ScalarProperty Name="StudentEmail" ColumnName="StudentEmail" />
+                <ScalarProperty Name="Phone" ColumnName="Phone" />
+                <ScalarProperty Name="CourseName" ColumnName="CourseName" />
+                <ScalarProperty Name="CourseID" ColumnName="CourseID" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
