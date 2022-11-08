@@ -1,5 +1,7 @@
-﻿using StudentManagement.API.DTO;
+﻿using FluentValidation.Results;
+using StudentManagement.API.DTO;
 using StudentManagement.API.Service;
+using StudentManagement.API.Validators;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,8 +10,7 @@ using System.Net.Http;
 using System.Web.Http;
 
 namespace StudentManagement.API.Controllers
-{
-    [Authorize]
+{    
     public class StudentController : ApiController
     {
 
@@ -26,11 +27,15 @@ namespace StudentManagement.API.Controllers
         public IHttpActionResult Add([FromBody] DtoStudent _input)
         {
             _studentService = new StudentService();
+            StudentModelValidator _validator = new StudentModelValidator();
+            ValidationResult results = _validator.Validate(_input);
+            string allMessages = results.ToString("~");
+            if (!results.IsValid) return BadRequest(allMessages);
             var result=_studentService.AddStudent(_input);
             if (result)
             return Ok();
             else
-                return BadRequest();
+            return BadRequest();
         }
 
         [HttpPost]

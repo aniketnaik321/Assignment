@@ -5,7 +5,8 @@ using System.Linq;
 using System.Web;
 
 namespace StudentManagement.API.DTO
-{
+{ 
+    
     public class DtoStudent
     {
         public Guid StudentID { get; set; }       
