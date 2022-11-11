@@ -1,0 +1,98 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="StudentDBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="Course">
+    <Key>
+      <PropertyRef Name="CourseID" />
+    </Key>
+    <Property Name="CourseID" Type="Guid" Nullable="false" />
+    <Property Name="CourseName" Type="String" MaxLength="150" FixedLength="false" Unicode="false" />
+    <Property Name="CreatedOn" Type="DateTime" Precision="7" />
+    <Property Name="ModifiedOn" Type="DateTime" Precision="7" />
+    <NavigationProperty Name="StudentCourseMaps" Relationship="Self.FK_StudentCourseMap_Course" FromRole="Course" ToRole="StudentCourseMap" />
+  </EntityType>
+  <EntityType Name="Student">
+    <Key>
+      <PropertyRef Name="StudentID" />
+    </Key>
+    <Property Name="StudentID" Type="Guid" Nullable="false" />
+    <Property Name="StudName" Type="String" MaxLength="150" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="StudentEmail" Type="String" MaxLength="150" FixedLength="false" Unicode="false" />
+    <Property Name="Phone" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+    <Property Name="CreatedOn" Type="DateTime" Precision="7" />
+    <Property Name="ModifiedOn" Type="DateTime" Precision="7" />
+    <NavigationProperty Name="StudentCourseMaps" Relationship="Self.FK_StudentCourseMap_Student" FromRole="Student" ToRole="StudentCourseMap" />
+  </EntityType>
+  <EntityType Name="StudentCourseMap">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="StudentID" Type="Guid" />
+    <Property Name="CourseID" Type="Guid" />
+    <NavigationProperty Name="Course" Relationship="Self.FK_StudentCourseMap_Course" FromRole="StudentCourseMap" ToRole="Course" />
+    <NavigationProperty Name="Student" Relationship="Self.FK_StudentCourseMap_Student" FromRole="StudentCourseMap" ToRole="Student" />
+  </EntityType>
+  <Association Name="FK_StudentCourseMap_Course">
+    <End Role="Course" Type="Self.Course" Multiplicity="0..1" />
+    <End Role="StudentCourseMap" Type="Self.StudentCourseMap" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Course">
+        <PropertyRef Name="CourseID" />
+      </Principal>
+      <Dependent Role="StudentCourseMap">
+        <PropertyRef Name="CourseID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_StudentCourseMap_Student">
+    <End Role="Student" Type="Self.Student" Multiplicity="0..1" />
+    <End Role="StudentCourseMap" Type="Self.StudentCourseMap" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Student">
+        <PropertyRef Name="StudentID" />
+      </Principal>
+      <Dependent Role="StudentCourseMap">
+        <PropertyRef Name="StudentID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="StudentDBEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="Courses" EntityType="Self.Course" />
+    <EntitySet Name="Students" EntityType="Self.Student" />
+    <EntitySet Name="StudentCourseMaps" EntityType="Self.StudentCourseMap" />
+    <AssociationSet Name="FK_StudentCourseMap_Course" Association="Self.FK_StudentCourseMap_Course">
+      <End Role="Course" EntitySet="Courses" />
+      <End Role="StudentCourseMap" EntitySet="StudentCourseMaps" />
+    </AssociationSet>
+    <AssociationSet Name="FK_StudentCourseMap_Student" Association="Self.FK_StudentCourseMap_Student">
+      <End Role="Student" EntitySet="Students" />
+      <End Role="StudentCourseMap" EntitySet="StudentCourseMaps" />
+    </AssociationSet>
+    <FunctionImport Name="AddStudent" ReturnType="Collection(StudentDBModel.AddStudent_Result)">
+      <Parameter Name="StudentID" Mode="In" Type="Guid" />
+      <Parameter Name="StudentName" Mode="In" Type="String" />
+      <Parameter Name="EmailID" Mode="In" Type="String" />
+      <Parameter Name="PhoneNo" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="AssignCourseToStudent">
+      <Parameter Name="StudentID" Mode="In" Type="Guid" />
+      <Parameter Name="CourseID" Mode="In" Type="Guid" />
+    </FunctionImport>
+    <FunctionImport Name="GetStudentList" ReturnType="Collection(StudentDBModel.GetStudentList_Result)">
+      <Parameter Name="PageNo" Mode="In" Type="Int32" />
+      <Parameter Name="PageLength" Mode="In" Type="Int32" />
+    </FunctionImport>
+  </EntityContainer>
+  <ComplexType Name="AddStudent_Result">
+    <Property Type="Int32" Name="ErrStatus" Nullable="false" />
+    <Property Type="String" Name="ErrMsg" Nullable="false" MaxLength="4" />
+  </ComplexType>
+  <ComplexType Name="GetStudentList_Result">
+    <Property Type="Guid" Name="StudentID" Nullable="true" />
+    <Property Type="String" Name="StudName" Nullable="false" MaxLength="150" />
+    <Property Type="String" Name="StudentEmail" Nullable="true" MaxLength="150" />
+    <Property Type="String" Name="Phone" Nullable="true" MaxLength="15" />
+    <Property Type="String" Name="CourseName" Nullable="true" MaxLength="150" />
+    <Property Type="Guid" Name="CourseID" Nullable="false" />
+  </ComplexType>
+</Schema>

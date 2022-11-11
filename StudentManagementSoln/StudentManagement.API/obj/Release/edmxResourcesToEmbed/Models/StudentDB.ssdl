@@ -1,0 +1,82 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="StudentDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="Course">
+    <Key>
+      <PropertyRef Name="CourseID" />
+    </Key>
+    <Property Name="CourseID" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="CourseName" Type="varchar" MaxLength="150" />
+    <Property Name="CreatedOn" Type="datetime2" Precision="7" />
+    <Property Name="ModifiedOn" Type="datetime2" Precision="7" />
+  </EntityType>
+  <EntityType Name="Student">
+    <Key>
+      <PropertyRef Name="StudentID" />
+    </Key>
+    <Property Name="StudentID" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="StudName" Type="varchar" MaxLength="150" Nullable="false" />
+    <Property Name="StudentEmail" Type="varchar" MaxLength="150" />
+    <Property Name="Phone" Type="varchar" MaxLength="15" />
+    <Property Name="CreatedOn" Type="datetime2" Precision="7" />
+    <Property Name="ModifiedOn" Type="datetime2" Precision="7" />
+  </EntityType>
+  <EntityType Name="StudentCourseMap">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="StudentID" Type="uniqueidentifier" />
+    <Property Name="CourseID" Type="uniqueidentifier" />
+  </EntityType>
+  <Association Name="FK_StudentCourseMap_Course">
+    <End Role="Course" Type="Self.Course" Multiplicity="0..1" />
+    <End Role="StudentCourseMap" Type="Self.StudentCourseMap" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Course">
+        <PropertyRef Name="CourseID" />
+      </Principal>
+      <Dependent Role="StudentCourseMap">
+        <PropertyRef Name="CourseID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_StudentCourseMap_Student">
+    <End Role="Student" Type="Self.Student" Multiplicity="0..1" />
+    <End Role="StudentCourseMap" Type="Self.StudentCourseMap" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Student">
+        <PropertyRef Name="StudentID" />
+      </Principal>
+      <Dependent Role="StudentCourseMap">
+        <PropertyRef Name="StudentID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Function Name="AddStudent" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="StudentID" Type="uniqueidentifier" Mode="In" />
+    <Parameter Name="StudentName" Type="varchar" Mode="In" />
+    <Parameter Name="EmailID" Type="varchar" Mode="In" />
+    <Parameter Name="PhoneNo" Type="varchar" Mode="In" />
+  </Function>
+  <Function Name="AssignCourseToStudent" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="StudentID" Type="uniqueidentifier" Mode="In" />
+    <Parameter Name="CourseID" Type="uniqueidentifier" Mode="In" />
+  </Function>
+  <Function Name="GetStudentList" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="PageNo" Type="int" Mode="In" />
+    <Parameter Name="PageLength" Type="int" Mode="In" />
+  </Function>
+  <EntityContainer Name="StudentDBModelStoreContainer">
+    <EntitySet Name="Course" EntityType="Self.Course" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Student" EntityType="Self.Student" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="StudentCourseMap" EntityType="Self.StudentCourseMap" Schema="dbo" store:Type="Tables" />
+    <AssociationSet Name="FK_StudentCourseMap_Course" Association="Self.FK_StudentCourseMap_Course">
+      <End Role="Course" EntitySet="Course" />
+      <End Role="StudentCourseMap" EntitySet="StudentCourseMap" />
+    </AssociationSet>
+    <AssociationSet Name="FK_StudentCourseMap_Student" Association="Self.FK_StudentCourseMap_Student">
+      <End Role="Student" EntitySet="Student" />
+      <End Role="StudentCourseMap" EntitySet="StudentCourseMap" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

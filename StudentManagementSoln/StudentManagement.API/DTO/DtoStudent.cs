@@ -11,7 +11,7 @@ namespace StudentManagement.API.DTO
     {
         public Guid StudentID { get; set; }       
         
-        public string StudentName { get; set; }
+        public string StudName { get; set; }
         
         public string EmailID { get; set; }
         public string PhoneNo { get; set; }

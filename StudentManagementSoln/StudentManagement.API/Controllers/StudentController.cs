@@ -1,16 +1,21 @@
-﻿using FluentValidation.Results;
+﻿using CrystalDecisions.CrystalReports.Engine;
+using FluentValidation.Results;
 using StudentManagement.API.DTO;
+using StudentManagement.API.Models;
 using StudentManagement.API.Service;
 using StudentManagement.API.Validators;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 
+
 namespace StudentManagement.API.Controllers
-{    
+{
+   // [Authorize]
     public class StudentController : ApiController
     {
 
@@ -44,6 +49,9 @@ namespace StudentManagement.API.Controllers
             _studentService = new StudentService();
             return Ok(_studentService.AssignStudentToCourse(_input.StudentID,_input.CourseID));
         }
+
+
+       
 
     }
 }

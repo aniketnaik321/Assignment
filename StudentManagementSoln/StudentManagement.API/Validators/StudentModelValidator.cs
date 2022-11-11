@@ -17,7 +17,7 @@ namespace StudentManagement.API.Validators
             RuleFor(T => T.CourseName)
                     .MinimumLength(5)
                     .WithMessage("Course Name should be minimum length of 5");
-            RuleFor(T => T.StudentName)
+            RuleFor(T => T.StudName)
                 .NotEmpty().WithMessage("Student Name is required");
             
         }

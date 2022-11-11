@@ -29,16 +29,16 @@ namespace StudentManagement.API.Service
                     EmailID=T.StudentEmail,
                     PhoneNo=T.Phone,
                     StudentID=T.StudentID.Value,
-                    StudentName=T.StudName
+                    StudName=T.StudName
                 });
             });
             return result;
 
         }
         public bool AddStudent(DtoStudent _input) {
-            if (string.IsNullOrWhiteSpace(_input.StudentName)) return false;
+            if (string.IsNullOrWhiteSpace(_input.StudName)) return false;
             if (string.IsNullOrWhiteSpace(_input.EmailID)) return false;
-            var result= _dbContext.AddStudent(Guid.NewGuid(), _input.StudentName, _input.EmailID, _input.PhoneNo);
+            var result= _dbContext.AddStudent(Guid.NewGuid(), _input.StudName, _input.EmailID, _input.PhoneNo);
             if (result.First().ErrStatus.Equals(2))
                 return false;
             return true;
